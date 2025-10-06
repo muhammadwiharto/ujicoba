@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kecamatan Cileungsi — SDN</title>
+
+  <!-- Google Fonts: Poppins (heading) + Montserrat (nav/sub) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+  :root{
+    --blue-900: #0b3456;
+    --accent: #0b6fb0;
+  }
+
+  html,body{
+    height:100%;
+  }
+  body{
+    font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    margin:0;
+    color:#0f1724;
+    background:#fff;
+  }
+
+  /* NAV */
+  header nav{
+    backdrop-filter: blur(6px);
+    background: rgba(8, 33, 58, 0.92);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .brand-title{
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+    font-weight: 800;
+    line-height:1;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+  }
+  .brand-small{
+    font-size:12px;
+    letter-spacing:1px;
+    font-weight:600;
+    color:#fff;
+  }
+  .nav-link{
+    font-family:"Montserrat",sans-serif;
+    color: rgba(255,255,255,0.95);
+    font-weight:600;
+    font-size:15.5px;
+    letter-spacing:0.3px;
+    transition:color 0.2s;
+  }
+  .nav-link:hover{ color:#4fc3f7; }
+
+  /* HERO */
+  .hero{
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 72vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top: 56px;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: rgba(11, 52, 86, 0.68);
+    z-index:1;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color: #fff;
+    max-width:1100px;
+    padding: 40px;
+  }
+
+  .hero .eyebrow{
+    font-family:"Montserrat", sans-serif;
+    font-weight:300;
+    letter-spacing:0.6px;
+    font-size: clamp(18px, 1.6vw, 22px);
+    margin-bottom:20px;
+    opacity:0.95;
+  }
+  .hero h1{
+    font-family:"Poppins", sans-serif;
+    font-weight:900;
+    margin:0;
+    line-height:0.88;
+    letter-spacing:-1.5px;
+    font-size: clamp(50px, 7.5vw, 118px);
+    margin-bottom:22px;
+    text-transform:none;
+  }
+  .hero .sub{
+    font-family:"Montserrat", sans-serif;
+    font-weight:400;
+    font-size: clamp(16px, 1.5vw, 20px);
+    color:#e8edf2;
+    margin-top:12px;
+  }
+
+  /* Floating left buttons */
+  .floating-left{
+    position: fixed;
+    left: 12px;
+    top: 44%;
+    transform: translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    z-index:60;
+  }
+  .floating-btn{
+    width:46px;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    box-shadow: 0 8px 20px rgba(3,10,24,0.2);
+    cursor:pointer;
+  }
+
+  /* Main content */
+  main{ padding-top:40px; }
+  .card{ background:#fff; border-radius:10px; box-shadow: 0 6px 18px rgba(11, 22, 38, 0.06); }
+
+  /* responsive tweaks */
+  @media (max-width:768px){
+    header nav{ padding:10px 16px; }
+    .nav-link{ font-size:15px; }
+    .hero{ min-height: 64vh; padding-top:72px; }
+    .floating-left{ left:8px; }
+  }
+</style>
+
+</head>
+<body>
+
+<!-- NAV -->
+<header class="fixed inset-x-0 top-0 z-50">
+  <nav class="max-w-[1320px] mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img id="logoImg" src="logo.png" alt="Logo Kecamatan" class="w-14 h-14 object-contain" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-title text-white text-xl">KECAMATAN</div>
+        <div class="brand-small">CILEUNGSI</div>
+      </div>
+    </div>
+
+    <ul class="hidden md:flex items-center gap-8">
+      <li><a class="nav-link" href="#">Beranda</a></li>
+      
+    </ul>
+
+    <!-- mobile hamburger -->
+    <div class="md:hidden">
+      <button id="menuToggle" class="p-2 rounded bg-white/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobileMenu" class="md:hidden hidden bg-[rgba(11,52,86,0.95)] text-white">
+    <ul class="px-6 py-4 space-y-3">
+      <li><a href="#" class="block">Beranda</a></li>
+      /*<li><a href="#" class="block">Berita</a></li>
+      <li><a href="#" class="block">Galeri</a></li>
+      <li><a href="#" class="block">Program dan Kegiatan</a></li>
+      <li><a href="#" class="block">Potensi</a></li>
+      <li><a href="#" class="block">Inovasi</a></li>
+      <li><a href="#" class="block">Tentang Kami</a></li>
+      <li><a href="#" class="block">Camat Menjawab</a></li> */
+    </ul>
+  </div>
+</header>
+
+<!-- HERO: gunakan hero.jpg yang ada di folder -->
+<section class="hero" style="background-image: url('Foto_Kecamatan.png'); margin-top: 72px;">
+  <div class="hero-content">
+    <div class="eyebrow">Pemerintah Kabupaten Bogor</div>
+    <h1>Kecamatan<br class="hidden md:block">Cileungsi</h1>
+    <div class="sub">Portal Resmi Website Kecamatan Cileungsi</div>
+  </div>
+</section>
+
+<!-- Floating buttons -->
+<div class="floating-left">
+  <a class="floating-btn" href="tel:+628112345678" title="Telepon" style="background:#0b67b2;">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 0 1 2-2h2.6a1 1 0 0 1 .92.62l1.2 3a1 1 0 0 1-.23 1.05L8.4 10.6a12.04 12.04 0 0 0 5.6 5.6l2.93-1.7a1 1 0 0 1 1.05-.23l3 1.2a1 1 0 0 1 .62.92V19a2 2 0 0 1-2 2h-1C9.178 21 3 14.822 3 7V5z"/></svg>
+  </a>
+  <a class="floating-btn" href="https://wa.me/628112345678" target="_blank" title="WhatsApp" style="background:#25D366;">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.93 11.93 0 0 0 12 .02C5.37.02-.16 5.57-.16 12.2c0 2.12.56 4.18 1.62 6.01L.02 24l6.06-1.58a11.98 11.98 0 0 0 5.92 1.5h.04c6.63 0 12.18-5.55 12.18-12.18 0-3.26-1.27-6.32-3.7-8.76zM12 21.9c-1.92 0-3.79-.52-5.42-1.5l-.38-.23-3.6.94.96-3.51-.25-.37A9.61 9.61 0 0 1 2.36 12.2c0-5.33 4.35-9.67 9.68-9.67 2.59 0 5.02 1.01 6.84 2.83a9.62 9.62 0 0 1 2.84 6.84c0 5.33-4.35 9.67-9.68 9.67z"/><path d="M17.2 14.1c-.3-.15-1.76-.86-2.04-.96-.28-.1-.48-.15-.68.15-.2.3-.77.96-.95 1.16-.17.2-.35.23-.64.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2 0-.38-.02-.53-.02-.15-.68-1.63-.93-2.23-.24-.58-.48-.5-.66-.51-.17-.01-.37-.01-.56-.01-.2 0-.52.07-.8.36-.28.29-1.06 1.03-1.06 2.5 0 1.47 1.09 2.9 1.24 3.1.15.2 2.14 3.28 5.18 4.61 3.05 1.33 3.05.89 3.6.83.55-.06 1.76-.72 2.01-1.42.25-.7.25-1.3.175-1.42-.07-.12-.25-.2-.55-.35z"/></svg>
+  </a>
+</div>
+
+<!-- MAIN: Statistik & SDN list -->
+<main class="max-w-6xl mx-auto px-6 py-12">
+  <div class="text-center mb-8">
+    <h2 class="text-2xl md:text-3xl font-semibold">Statistik Sekolah Dasar Negeri</h2>
+    <p class="text-gray-600 mt-2">Ringkasan data 54 SDN di Kecamatan Cileungsi</p>
+  </div>
+
+  <div class="card p-6 mb-8">
+    <canvas id="eduChart" height="120"></canvas>
+  </div>
+
+  <div class="card p-6">
+    <h3 class="font-semibold mb-4">Daftar Sekolah Dasar Negeri (54)</h3>
+    <div id="sdGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+  </div>
+</main>
+
+<footer class="bg-gray-900 text-white py-6 mt-10">
+  <div class="max-w-6xl mx-auto text-center">© 2025 Kecamatan Cileungsi — Data Pendidikan</div>
+</footer>
+
+<script>
+/* Data placeholder (index 1..54) */
+const dataPerSekolah = [null,
+{name:'SDN BABAKAN 01',guru:12,siswa:320},{name:'SDN BABAKAN 02',guru:10,siswa:290},{name:'SDN BABAKAN 03',guru:8,siswa:215},
+{name:'SDN BABAKAN 04',guru:11,siswa:280},{name:'SDN CIBEUREUM',guru:9,siswa:240},{name:'SDN CILEUNGSI 01',guru:13,siswa:330},
+{name:'SDN CILEUNGSI 02',guru:7,siswa:190},{name:'SDN CILEUNGSI 03',guru:14,siswa:360},{name:'SDN CILEUNGSI 04',guru:10,siswa:275},
+{name:'SDN CILEUNGSI 05',guru:9,siswa:230},{name:'SDN CILEUNGSI 06',guru:12,siswa:310},{name:'SDN CILEUNGSI 07',guru:8,siswa:200},
+{name:'SDN CILEUNGSI 08',guru:11,siswa:285},{name:'SDN CILEUNGSI 09',guru:10,siswa:260},{name:'SDN CILEUNGSI 10',guru:9,siswa:245},
+{name:'SDN CINYOSOG 01',guru:13,siswa:340},{name:'SDN CINYOSOG 02',guru:7,siswa:175},{name:'SDN CIPENJO',guru:12,siswa:305},
+{name:'SDN CIPEUNCANG 01',guru:8,siswa:210},{name:'SDN CIPEUCANG 02',guru:11,siswa:290},{name:'SDN CIPEUCANG 03',guru:10,siswa:250},
+{name:'SDN CIPEUCANG 01',guru:9,siswa:235},{name:'SDN CIPICUNG 02',guru:14,siswa:370},{name:'SDN CIPICUNG 03',guru:12,siswa:315},
+{name:'SDN CIPICUNG 04',guru:8,siswa:205},{name:'SDN CIPICUNG 05',guru:11,siswa:280},{name:'SDN CIUNCAL',guru:10,siswa:255},
+{name:'SDN GANDOANG 01',guru:9,siswa:240},{name:'SDN GANDOANG 02',guru:13,siswa:345},{name:'SDN GANDOANG 03',guru:7,siswa:185},
+{name:'SDN KAMPUNG SAWAH 01',guru:12,siswa:320},{name:'SDN KAMPUNG SAWAH 02',guru:8,siswa:215},{name:'SDN KUBANG 01',guru:11,siswa:295},
+{name:'SDN KUBANG 02',guru:10,siswa:265},{name:'SDN LIMUSNUNGGAL 01',guru:9,siswa:230},{name:'SDN LIMUSNUNGGAL 02',guru:14,siswa:380},
+{name:'SDN LIMUSNUNGGAL 03',guru:12,siswa:310},{name:'SDN MAMPIR',guru:8,siswa:205},{name:'SDN NYALINDUNG',guru:11,siswa:285},
+{name:'SDN PALASARI 01',guru:10,siswa:250},{name:'SDN PALASARI 02',guru:9,siswa:240},{name:'SDN PALASARI 03',guru:13,siswa:335},
+{name:'SDN PASIRANGIN 01',guru:7,siswa:180},{name:'SDN PASIRANGIN 02',guru:12,siswa:300},{name:'SDN PASIRANGIN 03',guru:8,siswa:210},
+{name:'SDN PASIRANGIN 04',guru:11,siswa:290},{name:'SDN PASIRNANGIN 05',guru:10,siswa:255},{name:'SDN PASIRNANGIN 06',guru:9,siswa:238},
+{name:'SDN RAWA ENDAH',guru:14,siswa:372},{name:'SDN RAWAILAT',guru:12,siswa:318},{name:'SDN SARONGGE',guru:8,siswa:208},
+{name:'SDN SITUSARI 01',guru:11,siswa:287},{name:'SDN SITUSARI 02',guru:10,siswa:262},{name:'SDN TUNGGILIS',guru:9,siswa:242}
+];
+
+/* render buttons */
+function renderSDGrid(){
+  const container = document.getElementById('sdGrid');
+  container.innerHTML = dataPerSekolah.slice(1).map((d,i)=>{
+    return `<button onclick="openSDN(${i+1})" class="text-sm p-3 border rounded-md hover:shadow">${d.name}</button>`;
+  }).join('');
+}
+
+/* chart */
+function renderChart(){
+  const totalSekolah = dataPerSekolah.slice(1).length;
+  const totalTeachers = dataPerSekolah.slice(1).reduce((s,d)=>s + d.guru,0);
+  const totalStudents = dataPerSekolah.slice(1).reduce((s,d)=>s + d.siswa,0);
+  const ctx = document.getElementById('eduChart').getContext('2d');
+  new Chart(ctx, {
+    type:'bar',
+    data:{ labels:['Sekolah','Guru','Siswa'], datasets:[{ data:[totalSekolah,totalTeachers,totalStudents], backgroundColor:['#0b67b2','#059669','#06b6d4'], borderRadius:6 }]},
+    options:{ responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+  });
+}
+
+function openSDN(index){
+  // mapping index ke file PDF
+  const pdfFiles = {
+    1: "https://drive.google.com/file/d/1QdnET6HJH5ZyeFyStnf-9-devN0gOPyf/view?usp=drive_link",
+    2: "pdf/2.SDN_BABAKAN_02.pdf",
+    3: "pdf/3.SDN_BABAKAN_03.pdf",
+	4: "pdf/4.SDN_BABAKAN_04.pdf",
+	5: "pdf/5.SDN_CIBEUREUM.pdf",
+    6: "pdf/6.SDN_CILEUNGSI_01.pdf",
+    7: "pdf/7.SDN_CILEUNGSI_02.pdf",
+	8: "pdf/8.SDN_CILEUNGSI_03.pdf",
+	9: "pdf/9.SDN_CILEUNGSI_04.pdf",
+   10: "pdf/10.SDN_CILEUNGSI_05.pdf",
+   11: "pdf/11.SDN_CILEUNGSI_06.pdf",
+   12: "pdf/12.SDN_CILEUGNSI_07.pdf",
+   13: "pdf/13.SDN_CILEUNGSI_08.pdf",
+   14: "pdf/14.SDN_CILEUNGSI_09.pdf",
+   15: "pdf/15.SDN_CILEUNGSI_10.pdf",
+   16: "pdf/16.SDN_CINYOSOG_01.pdf",
+   17: "pdf/17.SDN_CINYOSOG_02.pdf",
+   18: "pdf/18.SDN_CIPENJO.pdf",
+   19: "pdf/19.SDN_CIPEUCANG_01.pdf",
+   20: "pdf/20.SDN_CIPEUCANG_02.pdf",
+   21: "pdf/21.SDN_CIPEUCANG_03.pdf",
+   22: "pdf/22.SDN_CIPICUNG_01.pdf",
+   23: "pdf/23.SDN_CIPICUNG_02.pdf",
+   24: "pdf/24.SDN_CIPICUNG_03.pdf", 
+   25: "pdf/25.SDN_CIPICUNG_04.pdf",
+   26: "pdf/26.SDN_CIPICUNG_05.pdf",
+   27: "pdf/27.SDN_CIUNCAL.pdf",
+   28: "pdf/28.SDN_GANDOANG_01.pdf",
+   29: "pdf/29.SDN_GANDOANG_02.pdf",
+   30: "pdf/30.SDN_GANDOANG_03.pdf",
+   31: "pdf/31.SDN_KAMPUNG_SAWAH_01.pdf",
+   32: "pdf/32.SDN_KAMPUNG_SAWAH_02.pdf",
+   33: "pdf/33.SDN_KUBANG_01.pdf",
+   34: "pdf/34.SDN_KUBANG_02.pdf", 
+   35: "pdf/35.SDN_LIMUSNUNGGAL_01.pdf",
+   36: "pdf/36.SDN_LIMUSNUNGGAL_02.pdf",
+   37: "pdf/37.SDN_LIMUSNUNGGAL_03.pdf",
+   38: "pdf/38.SDN_MAMPIR.pdf",
+   39: "pdf/39.SDN_NYALINDUNG.pdf",
+   40: "pdf/40.SDN_PALASARI_01.pdf",
+   41: "pdf/41.SDN_PALASARI_02.pdf",
+   42: "pdf/42.SDN_PALASARI_03.pdf",
+   43: "pdf/43.SDN_PASIRANGIN_01.pdf",
+   44: "pdf/44.SDN_PASIRANGIN_02.pdf", 
+   45: "pdf/45.SDN_PASIRANGIN_03.pdf",
+   46: "pdf/46.SDN_PASIRANGIN_04.pdf",
+   47: "pdf/47.SDN_PASIRANGIN_05.pdf",
+   48: "pdf/48.SDN_PASIRANGIN_06.pdf",
+   49: "pdf/49.SDN_RAWA_ENDAH.pdf",
+   50: "pdf/50.SDN_RAWAILAT.pdf",
+   51: "pdf/51.SDN_SARONGGE.pdf",
+   52: "pdf/52.SDN_SITUSARI_01.pdf",
+   53: "pdf/53.SDN_SITUSARI_02.pdf",
+   54: "pdf/54.SDN_TUNGGILIS.pdf"
+    // tambahkan sesuai daftar
+  };
+
+  if(pdfFiles[index]){
+    window.open(pdfFiles[index], "_blank");
+  } else {
+    alert("File PDF belum tersedia untuk sekolah ini");
+  }
+}
+
+/* mobile menu toggle */
+document.getElementById('menuToggle').addEventListener('click', ()=>{
+  document.getElementById('mobileMenu').classList.toggle('hidden');
+});
+
+/* init */
+renderSDGrid();
+renderChart();
+</script>
+</body>
+</html>
